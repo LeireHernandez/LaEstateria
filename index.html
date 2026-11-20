@@ -99,8 +99,7 @@ input.sdc:focus{background:var(--soft)}.sdc.ok,.cx input.ok{background:#cfe6d3;c
 </script>
 </head>
 <body>
-
-<div class="wrap" id="shelfView"><h1>La estantería de Hugo</h1><p class="lead">Todos los números, de izquierda a derecha, del más antiguo al más reciente.</p><div id="shelf"></div></div>
+<div class="wrap" id="shelfView"><h1>La estantería de Hugo</h1><p class="lead">Todos los números, de izquierda a derecha, del más antiguo al más reciente.</p><button id="avisos" class="pz" style="display:none;margin-bottom:24px">🔔 Avisarme de nuevos números</button><div id="shelf"></div></div>
 <div class="reader" id="reader"><div class="bar"><button id="close">‹ Volver a la estantería</button></div>
 <div class="stage"><div class="book" id="book"></div></div>
 <div class="ctrl"><button id="prev" aria-label="Página anterior">‹</button><span id="count"></span><button id="next" aria-label="Página siguiente">›</button></div></div>
@@ -192,6 +191,21 @@ Promise.resolve(window.REVISTAS||[]).then(function(list){
 }).catch(function(){shelf.innerHTML='<p class="lead">No se han podido cargar las revistas.</p>';});
 })();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+</script>
+  <script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(function(OneSignal) {
+  var b = document.getElementById('avisos');
+  function actualizar() {
+    var soportado = OneSignal.Notifications.isPushSupported();
+    var concedido = OneSignal.Notifications.permission;
+    b.style.display = (soportado && !concedido) ? '' : 'none';
+  }
+  actualizar();
+  b.onclick = function() {
+    OneSignal.Notifications.requestPermission().then(actualizar);
+  };
+});
 </script>
 </body>
 </html>
