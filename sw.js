@@ -1,18 +1,31 @@
-const CACHE='revista-v2';
-const CORE=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
-self.addEventListener('install',e=>{
-  e.waitUntil(caches.open(CACHE).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()));
+const CACHE = 'revista-v3';
+
+self.addEventListener('install', function () {
+  self.skipWaiting();
 });
-self.addEventListener('activate',e=>{
-  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+
+self.addEventListener('activate', function (e) {
+  e.waitUntil(
+    caches.keys()
+      .then(function (keys) {
+        return Promise.all(keys.filter(function (k) { return k !== CACHE; })
+          .map(function (k) { return caches.delete(k); }));
+      })
+      .then(function () { return self.clients.claim(); })
+  );
 });
-// Muestra lo guardado al instante y actualiza en segundo plano (así los números nuevos aparecen solos).
-self.addEventListener('fetch',e=>{
-  const r=e.request;
-  if(r.method!=='GET'||new URL(r.url).origin!==location.origin)return;
-  e.respondWith(caches.open(CACHE).then(async c=>{
-    const hit=await c.match(r,{ignoreSearch:true});
-    const net=fetch(r).then(res=>{if(res.ok)c.put(r,res.clone());return res;}).catch(()=>hit);
-    return hit||net;
-  }));
+
+self.addEventListener('fetch', function (e) {
+  if (e.request.method !== 'GET') return;
+  var url = new URL(e.request.url);
+  if (url.origin !== location.origin) return;
+  e.respondWith(
+    fetch(e.request, { cache: 'no-cache' })
+      .then(function (r) {
+        var copia = r.clone();
+        caches.open(CACHE).then(function (c) { c.put(e.request, copia); });
+        return r;
+      })
+      .catch(function () { return caches.match(e.request); })
+  );
 });
