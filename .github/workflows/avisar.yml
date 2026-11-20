@@ -1,0 +1,22 @@
+name: Avisar de nueva revista
+
+on:
+  push:
+    paths:
+      - 'numero-*.js'
+
+jobs:
+  avisar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar notificación
+        run: |
+          curl -X POST "https://api.onesignal.com/notifications?c=push" \
+            -H "Authorization: Key ${{ secrets.ONESIGNAL_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "app_id": "${{ secrets.ONESIGNAL_APP_ID }}",
+              "included_segments": ["Subscribed Users"],
+              "headings": {"en": "Revista Leire"},
+              "contents": {"en": "Se acaba de añadir una nueva revista a tu estantería. ¡Corre a leerla!"}
+            }'
