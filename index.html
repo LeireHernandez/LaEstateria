@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="Revista Leire">
 <meta name="color-scheme" content="light">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>La estantería de Hugo</title>
+<title>La estantería</title>
 <style>
 :root{--stage:#e4e8e2;--paper:#f7f4ed;--ink:#1e2a33;--mut:#6c7479;--acc:#2f6b66;--soft:#e8eeea;--line:#d5d9d2;--dark:#1e2f36;--plank:#685a42;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -103,7 +103,7 @@ input.sdc:focus{background:var(--soft)}.sdc.ok,.cx input.ok{background:#cfe6d3;c
 </script>
 </head>
 <body>
-<div class="wrap" id="shelfView"><h1>La estantería de Hugo</h1><p class="lead">Todos los números, de izquierda a derecha, del más antiguo al más reciente. </p><button id="avisos" class="avisos" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span>Avisarme de nuevas revistas</span></button><div id="shelf"></div></div>
+<div class="wrap" id="shelfView"><h1>La estantería de Hugo</h1><p class="lead">Todos los números, de izquierda a derecha, del más antiguo al más reciente. </p><button id="avisos" class="avisos" ><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span>Avisarme de nuevas revistas</span></button><div id="shelf"></div></div>
 <div class="reader" id="reader"><div class="bar"><button id="close">‹ Volver a la estantería</button></div>
 <div class="stage"><div class="book" id="book"></div></div>
 <div class="ctrl"><button id="prev" aria-label="Página anterior">‹</button><span id="count"></span><button id="next" aria-label="Página siguiente">›</button></div></div>
@@ -196,20 +196,21 @@ Promise.resolve(window.REVISTAS||[]).then(function(list){
 })();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 </script>
-  <script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-OneSignalDeferred.push(function(OneSignal) {
+ <script>
+(function(){
   var b = document.getElementById('avisos');
-  function actualizar() {
-    var soportado = OneSignal.Notifications.isPushSupported();
-    var concedido = OneSignal.Notifications.permission;
-    b.style.display = (soportado && !concedido) ? '' : 'none';
+  if (!b) return;
+  function ocultarSiYaHayPermiso(){
+    try { if (window.Notification && Notification.permission === 'granted') b.style.display = 'none'; } catch(e){}
   }
-  actualizar();
-  b.onclick = function() {
-    OneSignal.Notifications.requestPermission().then(actualizar);
+  ocultarSiYaHayPermiso();
+  b.onclick = function(){
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(function(OneSignal){
+      OneSignal.Notifications.requestPermission().then(ocultarSiYaHayPermiso);
+    });
   };
-});
+})();
 </script>
 </body>
 </html>
