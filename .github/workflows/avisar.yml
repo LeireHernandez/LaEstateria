@@ -3,7 +3,7 @@ name: Avisar de nueva revista
 on:
   push:
     paths:
-      - 'numero-*.js'
+      - 'revistas/numero-*.js'
 
 jobs:
   avisar:
