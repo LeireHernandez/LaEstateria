@@ -84,6 +84,10 @@ blockquote span{display:block;font:12px Helvetica,Arial,sans-serif;color:var(--m
 input.sdc{color:var(--acc)}.sdc.given{background:var(--soft)}
 .sdc.br{border-right:2px solid var(--ink)}.sdc.bb{border-bottom:2px solid var(--ink)}
 input.sdc:focus{background:var(--soft)}.sdc.ok,.cx input.ok{background:#cfe6d3;color:#1e2a33}.sdc.bad,.cx input.bad{background:#f3d1c8;color:#1e2a33}
+.avisos{display:inline-flex;align-items:center;gap:8px;margin:0 0 30px;padding:9px 18px 9px 14px;background:transparent;color:var(--acc);border:1px solid var(--acc);border-radius:99px;font:600 13px/1 Helvetica,Arial,sans-serif;letter-spacing:.02em;cursor:pointer;transition:background .2s,color .2s,transform .15s}
+.avisos:hover,.avisos:focus-visible{background:var(--acc);color:var(--paper);outline:none}
+.avisos:active{transform:scale(.97)}
+.avisos svg{flex-shrink:0}
 </style>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
@@ -99,7 +103,7 @@ input.sdc:focus{background:var(--soft)}.sdc.ok,.cx input.ok{background:#cfe6d3;c
 </script>
 </head>
 <body>
-<div class="wrap" id="shelfView"><h1>La estantería de Hugo</h1><p class="lead">Todos los números, de izquierda a derecha, del más antiguo al más reciente.</p><button id="avisos" class="pz" style="display:none;margin-bottom:24px">🔔 Avisarme de nuevos números</button><div id="shelf"></div></div>
+<div class="wrap" id="shelfView"><h1>La estantería de Hugo</h1><p class="lead">Todos los números, de izquierda a derecha, del más antiguo al más reciente.</p<button id="avisos" class="avisos" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span>Avisarme de nuevas revistas</span></button><div id="shelf"></div></div>
 <div class="reader" id="reader"><div class="bar"><button id="close">‹ Volver a la estantería</button></div>
 <div class="stage"><div class="book" id="book"></div></div>
 <div class="ctrl"><button id="prev" aria-label="Página anterior">‹</button><span id="count"></span><button id="next" aria-label="Página siguiente">›</button></div></div>
