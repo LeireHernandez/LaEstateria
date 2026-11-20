@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="Revista Leire">
 <meta name="color-scheme" content="light">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>La estantería</title>
+<title>La estantería de Hugo</title>
 <style>
 :root{--stage:#e4e8e2;--paper:#f7f4ed;--ink:#1e2a33;--mut:#6c7479;--acc:#2f6b66;--soft:#e8eeea;--line:#d5d9d2;--dark:#1e2f36;--plank:#685a42;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -95,8 +95,8 @@ input.sdc:focus{background:var(--soft)}.sdc.ok,.cx input.ok{background:#cfe6d3;c
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "56c99257-02ca-4338-8524-1ffd02af5f24",
-      serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
-      serviceWorkerParam: { scope: "/push/onesignal/" },
+      serviceWorkerPath: "LaEstateria/push/onesignal/OneSignalSDKWorker.js",
+      serviceWorkerParam: { scope: "/LaEstateria/push/onesignal/" },
       notifyButton: { enable: false }
     });
   });
