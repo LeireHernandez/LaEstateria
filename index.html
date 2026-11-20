@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="Revista Leire">
 <meta name="color-scheme" content="light">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>La estantería</title>
+<title>La estantería de Hugo</title>
 <style>
 :root{--stage:#e4e8e2;--paper:#f7f4ed;--ink:#1e2a33;--mut:#6c7479;--acc:#2f6b66;--soft:#e8eeea;--line:#d5d9d2;--dark:#1e2f36;--plank:#685a42;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -96,12 +96,14 @@ input.sdc:focus{background:var(--soft)}.sdc.ok,.cx input.ok{background:#cfe6d3;c
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "56c99257-02ca-4338-8524-1ffd02af5f24",
-      serviceWorkerPath: "LaEstateria/push/onesignal/OneSignalSDKWorker.js",
-      serviceWorkerParam: { scope: "/LaEstateria/push/onesignal/" },
-      notifyButton: { enable: false }
-    });
+    try {
+      await OneSignal.init({
+        appId: "PEGA_AQUI_EL_APP_ID",
+        serviceWorkerPath: "LaEstateria/push/onesignal/OneSignalSDKWorker.js",
+        serviceWorkerParam: { scope: "/LaEstateria/push/onesignal/" },
+        notifyButton: { enable: false }
+      });
+    } catch (e) { window.osError = String((e && e.message) || e); }
   });
 </script>
 </head>
@@ -204,19 +206,37 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
   var b = document.getElementById('avisos');
   if (!b) return;
   var t = b.querySelector('span');
-  function estado(){
+  var info = document.createElement('p');
+  info.className = 'small';
+  info.style.cssText = 'margin:-18px 0 26px;max-width:340px';
+  b.parentNode.insertBefore(info, b.nextSibling);
+
+  function estado(OneSignal){
     var p = window.Notification ? Notification.permission : 'unsupported';
-    if (p === 'granted') { b.disabled = true; t.textContent = 'Avisos activados'; }
+    var ok = false;
+    try { ok = !!(OneSignal && OneSignal.User.PushSubscription.optedIn); } catch(e){}
+    info.textContent = '';
+    if (ok) { b.disabled = true; t.textContent = 'Avisos activados'; }
     else if (p === 'denied') { b.disabled = true; t.textContent = 'Avisos bloqueados en el móvil'; }
     else if (p === 'unsupported') { b.disabled = true; t.textContent = 'Avisos no disponibles'; }
+    else {
+      b.disabled = false;
+      t.textContent = p === 'granted' ? 'Reintentar activar avisos' : 'Avisarme de nuevas revistas';
+      if (p === 'granted') info.textContent = 'Error: ' + (window.osError || 'OneSignal no ha registrado este móvil.');
+    }
   }
-  estado();
-  b.onclick = function(){
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(function(OneSignal){
-      OneSignal.Notifications.requestPermission().then(estado);
-    });
-  };
+
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(function(OneSignal){
+    setTimeout(function(){ estado(OneSignal); }, 1500);
+    b.onclick = async function(){
+      try {
+        await OneSignal.Notifications.requestPermission();
+        await OneSignal.User.PushSubscription.optIn();
+      } catch(e){ window.osError = String((e && e.message) || e); }
+      setTimeout(function(){ estado(OneSignal); }, 1000);
+    };
+  });
 })();
 </script>
 </body>
