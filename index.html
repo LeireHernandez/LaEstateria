@@ -216,7 +216,10 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
     var ok = false;
     try { ok = !!(OneSignal && OneSignal.User.PushSubscription.optedIn); } catch(e){}
     info.textContent = '';
-    if (ok) { b.disabled = true; t.textContent = 'Avisos activados'; }
+    if (ok) {
+  b.disabled = true; t.textContent = 'Avisos activados';
+  try { info.textContent = 'ID: ' + OneSignal.User.PushSubscription.id; } catch(e){}
+}
     else if (p === 'denied') { b.disabled = true; t.textContent = 'Avisos bloqueados en el móvil'; }
     else if (p === 'unsupported') { b.disabled = true; t.textContent = 'Avisos no disponibles'; }
     else {
