@@ -3,7 +3,7 @@ window.REVISTAS=window.REVISTAS||[];
 window.REVISTAS.push({
   num:3,
   date:"2026-11-20",
-  title:"El Hola Contraataca",
+  title:"El Hola Contra- ataca",
   color:"#6b3b3b",
   html:`
 <!-- 1 PORTADA -->
